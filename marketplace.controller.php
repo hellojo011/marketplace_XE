@@ -44,6 +44,33 @@ class marketplaceController extends marketplace
 			// 파일 사이즈 체크
 			if($allowed_filesize < filesize($file['tmp_name'])) return new BaseObject(-1, 'msg_thumbnail_exceeds_limit_size');
 		}
+		foreach(Context::get('thumbnail_c1') as $key => $file)
+		{
+			// 이미지 형식 체크
+			if(!preg_match("/\.(jpg|png|jpeg|gif|bmp)$/i",$file['name'])) {
+				return new BaseObject(-1, 'msg_thumbnail_image_file_only');
+			}	
+			// 파일 사이즈 체크
+			if($allowed_filesize < filesize($file['tmp_name'])) return new BaseObject(-1, 'msg_thumbnail_exceeds_limit_size');
+		}
+		foreach(Context::get('thumbnail_c2') as $key => $file)
+		{
+			// 이미지 형식 체크
+			if(!preg_match("/\.(jpg|png|jpeg|gif|bmp)$/i",$file['name'])) {
+				return new BaseObject(-1, 'msg_thumbnail_image_file_only');
+			}	
+			// 파일 사이즈 체크
+			if($allowed_filesize < filesize($file['tmp_name'])) return new BaseObject(-1, 'msg_thumbnail_exceeds_limit_size');
+		}
+		foreach(Context::get('thumbnail_c3') as $key => $file)
+		{
+			// 이미지 형식 체크
+			if(!preg_match("/\.(jpg|png|jpeg|gif|bmp)$/i",$file['name'])) {
+				return new BaseObject(-1, 'msg_thumbnail_image_file_only');
+			}	
+			// 파일 사이즈 체크
+			if($allowed_filesize < filesize($file['tmp_name'])) return new BaseObject(-1, 'msg_thumbnail_exceeds_limit_size');
+		}
 
 		// Insert document and item
 		$output = $this->_insertDocument();
@@ -222,6 +249,36 @@ class marketplaceController extends marketplace
 		$args->thumbnails_srl = getNextSequence();
 		$oFileController = getController('file');
 		foreach($obj->thumbnail as $key => $file)
+		{
+		$output = $oFileController->insertFile($file, $this->module_srl, $args->thumbnails_srl);
+		
+		$obj->file_srl = $output->get('file_srl');
+		$obj->comment = $key;
+		$output = executeQuery('marketplace.updateFileComment', $obj);
+		}
+		foreach(Context::get('thumbnail_c1') as $key => $file)
+		{
+			if(!is_uploaded_file($file['tmp_name'])) continue;
+
+            $output = $oFileController->insertFile($file, $this->module_srl, $args->thumbnails_srl);
+            if(!$output->toBool()) return $output;
+			
+			$obj->file_srl = $output->get('file_srl');
+			$obj->comment = $key;
+			$output = executeQuery('marketplace.updateFileComment', $obj);
+		}
+		foreach(Context::get('thumbnail_c2') as $key => $file)
+		{
+			if(!is_uploaded_file($file['tmp_name'])) continue;
+
+            $output = $oFileController->insertFile($file, $this->module_srl, $args->thumbnails_srl);
+            if(!$output->toBool()) return $output;
+			
+			$obj->file_srl = $output->get('file_srl');
+			$obj->comment = $key;
+			$output = executeQuery('marketplace.updateFileComment', $obj);
+		}
+		foreach(Context::get('thumbnail_c3') as $key => $file)
 		{
 			if(!is_uploaded_file($file['tmp_name'])) continue;
 
